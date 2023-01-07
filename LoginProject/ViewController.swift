@@ -8,13 +8,23 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
     // 메모리에 올려놈
-    let emailTextFieldView = UIView()
+    let emailTextFieldView : UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 8
+        view.layer.masksToBounds = true
+        /**
+         autoresizingMask는 superview가 변함에 따라 subview의 크기를 어떻게 할것인가이기 때문에, 이와 동일한 기능을 하는 autolayout에서 같이 사용된다면
+         충돌이 날 수 있는것 > 충돌 방지를 위해 Auturesizing을 사용하지 않는것으로 명시적 선언 **/
+        view.translatesAutoresizingMaskIntoConstraints = false
+        // Storybode에서는 autolayout을 사용하면 자동으로 false로 설정된다.
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        makeUI() 
+        makeUI()
     }
     
     func makeUI() {
@@ -22,16 +32,6 @@ class ViewController: UIViewController {
         
         // view에 추가
         view.addSubview(emailTextFieldView)
-        
-        // view 모서리를 둥글게 하기
-        // view radius in swift
-        emailTextFieldView.layer.cornerRadius = 8
-        emailTextFieldView.layer.masksToBounds = true
-        
-        /**
-         autoresizingMask는 superview가 변함에 따라 subview의 크기를 어떻게 할것인가이기 때문에, 이와 동일한 기능을 하는 autolayout에서 같이 사용된다면 충돌이 날 수 있는것 > 충돌 방지를 위해 Auturesizing을 사용하지 않는것으로 명시적 선언 **/
-        emailTextFieldView.translatesAutoresizingMaskIntoConstraints = false
-        // Storybode에서는 autolayout을 사용하면 자동으로 false로 설정된다.
         
         // 오토레리아웃을 지정
         // constraint(제약) : 오토레이아웃
@@ -46,7 +46,7 @@ class ViewController: UIViewController {
         // 높이는 기준이 없다
         emailTextFieldView.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
-
-
+    
+    
 }
 
