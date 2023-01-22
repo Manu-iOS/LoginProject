@@ -1,18 +1,14 @@
 //
-//  ViewController.swift
+//  LoginView.swift
 //  LoginProject
 //
-//  Created by 노민우 on 2023/01/07.
+//  Created by 노민우 on 2023/01/22.
 //
 
 import UIKit
 
-/*
-* class 앞에 final을 붙이는 이유
- class는 구조체 보다 느리다.(이유 : 동적 디스페치(Dynamic Dispatch) 때문에(Table Dispatch라고도 함)) 그리하여,
- final 키워드를 붙여 더이상 상속을 하지 못하게 막음으로써 메소드가 Direct Dispatch가 일어나게하는 키워드이다.
-*/
-final class ViewController: UIViewController {
+class LoginView: UIView {
+
     // MARK: - email을 입력하는 Text View
     private lazy var emailTextFieldView: UIView = {
         let view = UIView()
@@ -105,7 +101,7 @@ final class ViewController: UIViewController {
     }()
     
     // MARK: - 로그인 버튼
-    private let loginButton: UIButton = {
+    lazy var loginButton: UIButton = {
         let button = UIButton(type: .custom)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 5
@@ -129,12 +125,12 @@ final class ViewController: UIViewController {
     }()
     
     // 비밀번호 재설정 버튼
-    private let passwordResetButton: UIButton = {
+    lazy var passwordResetButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
         button.setTitle("비민번호 재설정", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-        button.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
+//        button.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -146,8 +142,8 @@ final class ViewController: UIViewController {
     lazy var passwordInfoLabelCenterYConstraint = passwordInfoLabel.centerYAnchor.constraint(equalTo: passwordTextFieldView.centerYAnchor)
     
     // MARK: - viewDidLoad()
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
         emailTextField.delegate = self
         passwordTextField.delegate = self
@@ -155,11 +151,15 @@ final class ViewController: UIViewController {
         makeUI()
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - UI설정
     func makeUI() {
-        view.backgroundColor = UIColor.black
-        view.addSubview(stackView)
-        view.addSubview(passwordResetButton)
+        backgroundColor = UIColor.black
+        addSubview(stackView)
+        addSubview(passwordResetButton)
         
         // AutoLayout을 잡을때는 translatesAutoresizingMaskIntoConstraints(자동으로 제약을 잡아주는) 비활성화 시켜줘야한다.
         emailTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -201,15 +201,15 @@ final class ViewController: UIViewController {
             passwordSecureButton.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: -8),
             
             // stackView 오토레이아웃 설정
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+            stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30),
             stackView.heightAnchor.constraint(equalToConstant: textViewHeight*3 + 36),
             
             passwordResetButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10),
-            passwordResetButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            passwordResetButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+            passwordResetButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
+            passwordResetButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30),
             stackView.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: textViewHeight)
         ])
     }
@@ -223,33 +223,16 @@ final class ViewController: UIViewController {
         print("로그인 버튼이 눌렸습니다.")
     }
     
-    @objc func resetButtonTapped(){
-        print("리셋버튼이 눌렸습니다.")
-        let alert = UIAlertController(title: "비밀번호 바꾸기", message: "비밀번호를 바꾸시겠습니까?", preferredStyle: .alert)
-        
-        let success = UIAlertAction(title: "확인", style: .default){ action in
-            print("확인버튼이 눌렸습니다.")
-        }
-        
-        let cancel = UIAlertAction(title: "취소", style: .cancel) { cancel in
-            print("취소버튼이 눌렸습니다.")
-        }
-        
-        alert.addAction(success)
-        alert.addAction(cancel)
-        
-        // present 다음 화면으로 넘어가는 메소드
-        present(alert, animated: true, completion: nil)
-    }
+    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view?.endEditing(true)
+        self.endEditing(true)
     }
     
 }
 
 // MARK: - 확장
-extension ViewController: UITextFieldDelegate {
+extension LoginView: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField == emailTextField {
             emailTextFieldView.backgroundColor = #colorLiteral(red: 0.4756349325, green: 0.4756467342, blue: 0.4756404161, alpha: 1)
@@ -317,28 +300,3 @@ extension ViewController: UITextFieldDelegate {
     }
     
 }
-
-#if DEBUG
-import SwiftUI
-struct Preview: UIViewControllerRepresentable {
-    
-    func makeUIViewController(context: Context) -> UIViewController {
-        ViewController()
-    }
-    
-    func updateUIViewController(_ uiView: UIViewController,context: Context) {
-        // leave this empty
-    }
-}
-
-struct ViewController_PreviewProvider: PreviewProvider {
-    static var previews: some View {
-        Group {
-            Preview()
-                .edgesIgnoringSafeArea(.all)
-                .previewDisplayName(/*@START_MENU_TOKEN@*/"Preview"/*@END_MENU_TOKEN@*/)
-                .previewDevice(PreviewDevice(rawValue: "iPhone 12 Pro"))
-        }
-    }
-}
-#endif
